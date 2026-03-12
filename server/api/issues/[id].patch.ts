@@ -4,32 +4,32 @@ and returns the updated issue. (It won't actually persist — that's fine, the p
 */
 
 export default defineEventHandler(async (event) => {
-    const body = await readBody(event)
-    const status = body.status
-    const id = event.context.params?.id;
+  const body = await readBody(event)
+  const status = body.status
+  const id = event.context.params?.id;
 
-    // status validation
-    const statusValues = ["open", "in-progress", "closed"]
-    if (!statusValues.includes(status)) {
-        throw createError({ 
-            statusCode: 400, 
-            message: 'Unknown status.' 
-        })
-    }
+  // status validation
+  const statusValues = ['open', 'in-progress', 'closed']
+  if (!statusValues.includes(status)) {
+    throw createError({
+      statusCode: 400,
+      message: 'Unknown status.'
+    })
+  }
 
-    interface Issue {
-        id: number;
-        title: string;
-        body: string;
-        userId: string;
-        status: string;
-    }
-    const issue = await $fetch<Issue>(`https://jsonplaceholder.typicode.com/posts/${id}`)
+  interface Issue {
+    id: number;
+    title: string;
+    body: string;
+    userId: string;
+    status: string;
+  }
+  const issue = await $fetch<Issue>(`https://jsonplaceholder.typicode.com/posts/${id}`)
 
-    const updatedIssue = {
-        ...issue,
-        status: status
-    }
+  const updatedIssue = {
+    ...issue,
+    status: status
+  }
 
-    return updatedIssue;
+  return updatedIssue;
 });

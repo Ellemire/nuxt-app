@@ -4,39 +4,39 @@
 // Exposes a toggleTodo(id: number) function that toggles the completed field in state.
 
 interface Todo {
-    id: number,
-    title: string,
-    completed: boolean
+  id: number,
+  title: string,
+  completed: boolean
 }
 
 export default function () {
 
-    const todos = useState<Todo[]>('todos', () => [])
+  const todos = useState<Todo[]>('todos', () => [])
 
-    const fetchTodos = async () => {
-        todos.value = await $fetch<Todo[]>('/api/todos')
-    }
+  const fetchTodos = async () => {
+    todos.value = await $fetch<Todo[]>('/api/todos')
+  }
 
-    const addTodo = async (title: string) => {
-        const todo = await $fetch<Todo>('/api/todos', {method: 'POST', body: {title}})
-        todos.value.push(todo)
-    }
+  const addTodo = async (title: string) => {
+    const todo = await $fetch<Todo>('/api/todos', {method: 'POST', body: {title}})
+    todos.value.push(todo)
+  }
 
-    const toggleTodo = async (id: number) => {
-        const todo = todos.value.find(t => t.id === id)
-        if (todo) {
-            const status = !todo.completed
-            await $fetch('/api/todos', {method: 'POST', body: {id: todo.id, title: todo.title, completed: status}})
-            todo.completed = status
-        }
+  const toggleTodo = async (id: number) => {
+    const todo = todos.value.find(t => t.id === id)
+    if (todo) {
+      const status = !todo.completed
+      await $fetch('/api/todos', {method: 'POST', body: {id: todo.id, title: todo.title, completed: status}})
+      todo.completed = status
     }
+  }
 
-    return {
-        todos,
-        fetchTodos,
-        addTodo,
-        toggleTodo
-    }
+  return {
+    todos,
+    fetchTodos,
+    addTodo,
+    toggleTodo
+  }
 }
 
 

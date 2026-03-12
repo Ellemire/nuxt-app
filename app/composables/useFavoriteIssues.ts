@@ -1,6 +1,6 @@
-/* Manages a list of favorited issue IDs using 
-  useCookie('favorite-issues', { default: () => [] }) so favorites survive page reloads. 
-Exposes isFavorite(id) , toggleFavorite(id) , and favoriteIds . 
+/* Manages a list of favorited issue IDs using
+  useCookie('favorite-issues', { default: () => [] }) so favorites survive page reloads.
+Exposes isFavorite(id) , toggleFavorite(id) , and favoriteIds .
 Use a computed getter that derives the set for O(1) lookups. */
 
 export default function () {

@@ -52,22 +52,23 @@
     />
 
     <UPageSection>
-      <UAlert 
-        title="Heads up!" 
+      <UAlert
+        title="Heads up!"
         icon="i-lucide-badge-alert"
         description="You can change the primary color in your app config."
         color="warning"
         close
-            :actions="[
-      {
-        label: 'Action 1'
-      },
-      {
-        label: 'Action 2',
-        color: 'neutral',
-        variant: 'subtle'
-      }
-    ]" />
+        :actions="[
+          {
+            label: 'Action 1'
+          },
+          {
+            label: 'Action 2',
+            color: 'neutral',
+            variant: 'subtle'
+          }
+        ]"
+      />
       <UPageCTA
         title="Ready to build your next Nuxt app?"
         description="Join thousands of developers building with Nuxt and Nuxt UI. Get this template and start shipping today."

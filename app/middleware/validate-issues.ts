@@ -2,7 +2,6 @@ export default defineNuxtRouteMiddleware((to) => {
   const validStatuses = ['open', 'in-progress', 'closed']
   const params = to.query
   const newQuery = { ...params }
-  
   console.log('Middleware - Validating status:', params)
 
   const parsedPage = parseInt(params.page as string)

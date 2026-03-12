@@ -7,5 +7,5 @@ export default defineEventHandler(async (event) => {
     title: body.title || 'None',
     completed: body.completed ?? false
   }
-  return newTodo;
-});
+  return newTodo
+})

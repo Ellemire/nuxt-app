@@ -35,10 +35,28 @@ useSeoMeta({
 
         <TemplateMenu />
         <div class="flex gap-2">
-        <UButton to="/todo" color="primary" variant="soft"> ToDo </UButton>
-        <UButton to="/issues" color="primary" variant="soft"> Issues </UButton>
-        <UButton to="/users" color="primary" variant="soft"> Users </UButton>
-    </div>
+          <UButton
+            to="/todo"
+            color="primary"
+            variant="soft"
+          >
+            ToDo
+          </UButton>
+          <UButton
+            to="/issues"
+            color="primary"
+            variant="soft"
+          >
+            Issues
+          </UButton>
+          <UButton
+            to="/users"
+            color="primary"
+            variant="soft"
+          >
+            Users
+          </UButton>
+        </div>
       </template>
 
       <template #right>

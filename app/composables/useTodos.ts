@@ -4,13 +4,12 @@
 // Exposes a toggleTodo(id: number) function that toggles the completed field in state.
 
 interface Todo {
-  id: number,
-  title: string,
+  id: number
+  title: string
   completed: boolean
 }
 
 export default function () {
-
   const todos = useState<Todo[]>('todos', () => [])
 
   const fetchTodos = async () => {
@@ -18,7 +17,11 @@ export default function () {
   }
 
   const addTodo = async (title: string) => {
-    const todo = await $fetch<Todo>('/api/todos', {method: 'POST', body: {title}})
+    const todo = await $fetch<Todo>('/api/todos', {
+      method: 'POST', body: {
+        title
+      }
+    })
     todos.value.push(todo)
   }
 
@@ -26,7 +29,11 @@ export default function () {
     const todo = todos.value.find(t => t.id === id)
     if (todo) {
       const status = !todo.completed
-      await $fetch('/api/todos', {method: 'POST', body: {id: todo.id, title: todo.title, completed: status}})
+      await $fetch('/api/todos', {
+        method: 'POST', body: {
+          id: todo.id, title: todo.title, completed: status
+        }
+      })
       todo.completed = status
     }
   }
@@ -38,5 +45,3 @@ export default function () {
     toggleTodo
   }
 }
-
-

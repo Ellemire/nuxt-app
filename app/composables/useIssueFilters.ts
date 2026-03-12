@@ -1,7 +1,7 @@
-/* Manages filter state ( page , status , userId ) using useState , 
-and exposes a computed queryParams object. 
-Provides setPage() , setStatus() , setUser() , and resetFilters() functions. 
-Crucially, sync filters bidirectionally with the URL: read initial values from useRoute().query on setup, 
+/* Manages filter state ( page , status , userId ) using useState ,
+and exposes a computed queryParams object.
+Provides setPage() , setStatus() , setUser() , and resetFilters() functions.
+Crucially, sync filters bidirectionally with the URL: read initial values from useRoute().query on setup,
   and call navigateTo({ query: ... }) when filters change — the URL is the source of truth.
 */
 
@@ -15,7 +15,7 @@ export default function () {
   }))
 
   const queryParams = computed(() => {
-    const params: Record<string, any> = {}
+    const params: Record<string, unknown> = {}
     if (filters.value.page) params.page = filters.value.page
     if (filters.value.status) params.status = filters.value.status
     if (filters.value.userId) params.userId = filters.value.userId
@@ -44,7 +44,7 @@ export default function () {
       userId: ''
     }
     navigateTo({ query: queryParams.value })
-  }   
+  }
 
   return {
     filters,

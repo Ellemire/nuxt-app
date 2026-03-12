@@ -1,5 +1,5 @@
-/* Uses useAsyncData with the filter composable's queryParams as a watch source to fetch /api/issues . 
-Exposes issues , total , pending , error , and refresh . 
+/* Uses useAsyncData with the filter composable's queryParams as a watch source to fetch /api/issues .
+Exposes issues , total , pending , error , and refresh .
 This composable should consume useIssueFilters internally */
 
 export default function () {
@@ -12,7 +12,7 @@ export default function () {
   )
 
   return {
-    issues:computed(() => data.value?.items || []),
+    issues: computed(() => data.value?.items || []),
     total: computed(() => data.value?.total || 0),
     pending,
     error,

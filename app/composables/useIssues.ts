@@ -7,7 +7,7 @@ export default function () {
 
   const { data, pending, error, refresh } = useAsyncData(
     'issues-list',
-    () => $fetch('/api/issues', { params: queryParams.value }),
+    () => $fetch('/api/issues', { params: queryParams.value as Record<string, unknown> }),
     { watch: [queryParams] }
   )
 

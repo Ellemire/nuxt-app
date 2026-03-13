@@ -1,12 +1,13 @@
+import { isIssueStatus } from '~/types/issue'
+
 export default defineNuxtRouteMiddleware((to) => {
-  const validStatuses = ['open', 'in-progress', 'closed']
   const params = to.query
   const newQuery = { ...params }
   console.log('Middleware - Validating status:', params)
 
   const parsedPage = parseInt(params.page as string)
-  const validPage = !isNaN(parsedPage) && parsedPage > 0
-  const validStatus = !params.status || validStatuses.includes(params.status as string)
+  const validPage = (!isNaN(parsedPage) && parsedPage > 0) || !params.page
+  const validStatus = !params.status || isIssueStatus(params.status)
 
   if (!validStatus) {
     delete newQuery.status

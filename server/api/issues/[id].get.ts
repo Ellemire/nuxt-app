@@ -1,15 +1,10 @@
 /* fetches a single post and its comments,
 returns them as { issue, comments } */
 
+import getStatusById from '~~/server/utils/get-status-by-id'
+
 export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id')
-
-  function getStatusById(id: number) {
-    const mod = id % 3
-    if (mod === 1) return 'in-progress'
-    if (mod === 2) return 'closed'
-    return 'open'
-  }
 
   const [rawIssue, comments] = await Promise.all([
     $fetch(`https://jsonplaceholder.typicode.com/posts/${id}`),

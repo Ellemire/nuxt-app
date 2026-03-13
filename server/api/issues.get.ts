@@ -4,16 +4,10 @@ and returns results mapped to an issue shape ( { id, title, body, userId, status
 derive status from id % 3 : 0 = "open", 1 = "in-progress", 2 = "closed").
 Add artificial pagination (10 per page).
 Return both the items and a total count. */
+import type { ApiIssue, Issue } from '~/types/issue'
+import getStatusById from '../utils/get-status-by-id'
 
 export default defineEventHandler(async (event) => {
-  interface Issue {
-    id: number
-    title: string
-    body: string
-    userId: string
-    status: string
-  }
-
   // Reads page , status , and userId from query params
   const query = getQuery(event)
   const page = Number(query.page) || 1
@@ -21,21 +15,14 @@ export default defineEventHandler(async (event) => {
   const userId = query.userId
 
   // fetches from https://jsonplaceholder.typicode.com/posts
-  const fetchData = await $fetch<unknown[]>('https://jsonplaceholder.typicode.com/posts')
+  const fetchData = await $fetch<ApiIssue[]>('https://jsonplaceholder.typicode.com/posts')
 
   const issues: Issue[] = fetchData.map((issue) => {
-    function getStatusById(id: number) {
-      const mod = id % 3
-      if (mod === 1) return 'in-progress'
-      if (mod === 2) return 'closed'
-      return 'open'
-    }
-
     return {
       id: issue.id,
       title: issue.title,
       body: issue.body,
-      userId: issue.userId,
+      userId: issue.userId.toString(),
       status: getStatusById(issue.id)
     }
   })
@@ -48,8 +35,8 @@ export default defineEventHandler(async (event) => {
 
   // Add artificial pagination (10 per page)
   const limit = 10
-  const currentPage = (page - 1) * limit
-  const paginatedIssues = filteredIssues.slice(currentPage, currentPage + 10)
+  const firstElementIndex = (page - 1) * limit
+  const paginatedIssues = filteredIssues.slice(firstElementIndex, firstElementIndex + limit)
 
   // Return both the items and a total count
   return {

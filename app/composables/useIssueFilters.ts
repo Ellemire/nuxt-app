@@ -15,7 +15,7 @@ export default function () {
   }))
 
   const queryParams = computed(() => {
-    const params: Record<string, unknown> = {}
+    const params: Record<string, string | number> = {}
     if (filters.value.page) params.page = filters.value.page
     if (filters.value.status) params.status = filters.value.status
     if (filters.value.userId) params.userId = filters.value.userId

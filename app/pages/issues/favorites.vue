@@ -62,22 +62,28 @@ and allows removing favorites inline.
 </template>
 
 <script setup lang="ts">
+import type { TableColumn, TableRow } from '@nuxt/ui'
+import { ISSUE_STATUSES, type IssueResponse, type Issue, type IssueComment } from '~/types/issue'
 import { resolveComponent, h } from 'vue'
+
+type FavoriteIssueRow = Issue & {
+  comments: IssueComment[]
+}
 
 const { favoriteIds, toggleFavorite, isFavorite } = useFavoriteIssues()
 const UBadge = resolveComponent('UBadge')
 const UButton = resolveComponent('UButton')
 
-const expanded = ref({})
+const expanded = ref<Record<number, boolean>>({})
 
-const { data, error, pending } = useAsyncData('favoriteIssues', async () => {
+const { data, error, pending } = useAsyncData<IssueResponse[]>('favoriteIssues', async () => {
   if (favoriteIds.value.length === 0) return []
-  return await Promise.all(favoriteIds.value.map(id => $fetch(`/api/issues/${id}`)))
+  return await Promise.all(favoriteIds.value.map(id => $fetch<IssueResponse>(`/api/issues/${id}`)))
 }, {
   watch: [favoriteIds]
 })
 
-const tableData = computed(() => {
+const tableData = computed<FavoriteIssueRow[]>(() => {
   if (!data.value) return []
   return data.value.map(item => ({
     ...item.issue,
@@ -85,15 +91,15 @@ const tableData = computed(() => {
   }))
 })
 
-const columns: TableColumn[] = [
+const columns: TableColumn<FavoriteIssueRow>[] = [
   {
     id: 'expand',
-    cell: ({ row }) => h(UButton, {
+    cell: ({ row }: { row: TableRow<FavoriteIssueRow> }) => h(UButton, {
       color: 'neutral',
       variant: 'ghost',
       icon: 'i-heroicons-chat-bubble-left-right',
       square: true,
-      onClick: (e) => {
+      onClick: (e: MouseEvent) => {
         e.stopPropagation()
         row.toggleExpanded()
       }
@@ -110,11 +116,11 @@ const columns: TableColumn[] = [
   {
     accessorKey: 'status',
     header: 'Status',
-    cell: ({ row }) => {
+    cell: ({ row }: { row: TableRow<FavoriteIssueRow> }) => {
       const color = {
-        'open': 'success' as const,
-        'in-progress': 'warning' as const,
-        'closed': 'error' as const
+        [ISSUE_STATUSES[0]]: 'success' as const,
+        [ISSUE_STATUSES[1]]: 'warning' as const,
+        [ISSUE_STATUSES[2]]: 'error' as const
       }[row.getValue('status') as string]
       return h(UBadge, { class: 'capitalize', variant: 'subtle', color }, () =>
         row.getValue('status')
@@ -128,7 +134,7 @@ const columns: TableColumn[] = [
   {
     id: 'favorite',
     header: 'Favorite',
-    cell: ({ row }) => {
+    cell: ({ row }: { row: TableRow<FavoriteIssueRow> }) => {
       const id = row.original.id
       const active = isFavorite(id)
 

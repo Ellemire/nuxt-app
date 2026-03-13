@@ -35,7 +35,7 @@ Include a <NuxtLink> back to the list that preserves the current query params (s
               <UBadge
                 variant="subtle"
                 class="capitalize"
-                :color="statusMap[data.issue.status] || 'neutral'"
+                :color="getStatusColor(data.issue.status)"
               >
                 {{ data.issue.status }}
               </UBadge>
@@ -73,45 +73,57 @@ Include a <NuxtLink> back to the list that preserves the current query params (s
 </template>
 
 <script setup lang="ts">
+import { ISSUE_STATUSES, type IssueResponse, type Issue } from '~/types/issue'
+
 const route = useRoute()
 const toast = useToast()
 const { filters } = useIssueFilters()
-const { data, error } = await useAsyncData(
+const { data, error } = await useAsyncData<IssueResponse>(
   `issue-${route.params.id}`,
   () => $fetch(`/api/issues/${route.params.id}`)
 )
 
 // Local state for issue and comments, initialized from fetched data
-const issue = ref(data.value?.issue)
+const issue = ref<Issue | null>(data.value?.issue ?? null)
 
-const statusMap = {
-  'open': 'success',
-  'in-progress': 'warning',
-  'closed': 'error'
-} as const
+const statusMap: Record<string, 'success' | 'warning' | 'error'> = {
+  [ISSUE_STATUSES[0]]: 'success',
+  [ISSUE_STATUSES[1]]: 'warning',
+  [ISSUE_STATUSES[2]]: 'error'
+}
 
-const statuses = [
-  { label: 'Open', value: 'open' },
-  { label: 'In Progress', value: 'in-progress' },
-  { label: 'Closed', value: 'closed' }
-]
+const getStatusColor = (status?: string) => {
+  if (!status) return 'neutral'
+
+  return statusMap[status] || 'neutral'
+}
+
+const statuses = ISSUE_STATUSES.map(status => ({
+  value: status,
+  label: status
+}))
 
 // Optimistic UI update for status change
 const updateStatus = async (newStatus: string) => {
-  const oldStatus = issue.value?.status
+  if (!issue.value || !data.value) return
+  const oldStatus = issue.value.status
   console.log('Current status:', oldStatus)
   console.log('Updating status to:', newStatus)
-  issue.value!.status = newStatus
+  issue.value.status = newStatus as Issue['status']
 
   try {
-    await $fetch(`/api/issues/${issue.value!.id}`, {
+    await $fetch(`/api/issues/${issue.value.id}`, {
       method: 'PATCH',
       body: { status: newStatus }
     })
-    console.log('Status updated successfully: ', data.value.issue.status)
+    console.log('Status updated successfully: ', data.value?.issue?.status)
   } catch (err) {
-    issue.value!.status = oldStatus
-    toast.error('Failed to update status')
+    issue.value.status = oldStatus
+    toast.add({
+      title: 'Error',
+      description: 'Failed to update status',
+      color: 'error'
+    })
     console.error('Error updating status:', err)
   }
 }

@@ -76,7 +76,9 @@ Use UAlert to display errors with a retry button that calls refresh() .
 </template>
 
 <script setup lang="ts">
-import type { TableColumn } from '@nuxt/ui'
+import type { TableColumn, TableRow } from '@nuxt/ui'
+import { ISSUE_STATUSES } from '~/types/issue'
+import type { Issue } from '~/types/issue'
 import { h, resolveComponent } from 'vue'
 
 definePageMeta({
@@ -85,23 +87,15 @@ definePageMeta({
 
 const UBadge = resolveComponent('UBadge')
 const UButton = resolveComponent('UButton')
-const items = ref(['open', 'in-progress', 'closed', 'all'])
+const items = ref([...ISSUE_STATUSES, 'all'])
 const userIds = ref(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'])
 
 const { issues, total, pending, error, refresh } = useIssues()
 const { filters, setPage, setStatus, setUser, resetFilters } = useIssueFilters()
 const { isFavorite, toggleFavorite } = useFavoriteIssues()
 
-interface Issue {
-  id: number
-  title: string
-  body: string
-  userId: string
-  status: string
-}
-
-const onSelect = (event: Event, row: TableRow<Issue>) => {
-  navigateTo(`/issues/${row.original.id}`, { query: filters.value })
+const onSelect = (_event: Event, row: TableRow<Issue>) => {
+  navigateTo({ path: `/issues/${row.original.id}`, query: filters.value })
 }
 
 const handleStatusChange = (filter: string) => {
@@ -128,7 +122,7 @@ const handlePageChange = (newPage: number) => {
   setPage(newPage)
 }
 
-const columns: TableColumn[] = [
+const columns: TableColumn<Issue>[] = [
   {
     accessorKey: 'id',
     header: 'ID'
@@ -140,7 +134,7 @@ const columns: TableColumn[] = [
   {
     accessorKey: 'status',
     header: 'Status',
-    cell: ({ row }) => {
+    cell: ({ row }: { row: TableRow<Issue> }) => {
       const color = {
         'open': 'success' as const,
         'in-progress': 'warning' as const,
@@ -158,7 +152,7 @@ const columns: TableColumn[] = [
   {
     id: 'favorite',
     header: 'Favorite',
-    cell: ({ row }) => {
+    cell: ({ row }: { row: TableRow<Issue> }) => {
       const id = row.original.id
       const active = isFavorite(id)
 

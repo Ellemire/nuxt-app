@@ -2,12 +2,7 @@
 // Exposes a fetchTodos() function that calls $fetch('/api/todos') and updates the state.
 // Exposes an addTodo(title: string) function that POSTs to /api/todos via $fetch and adds the result to the state array.
 // Exposes a toggleTodo(id: number) function that toggles the completed field in state.
-
-interface Todo {
-  id: number
-  title: string
-  completed: boolean
-}
+import type { Todo } from '~/types/todo'
 
 export default function () {
   const todos = useState<Todo[]>('todos', () => [])
@@ -29,12 +24,13 @@ export default function () {
     const todo = todos.value.find(t => t.id === id)
     if (todo) {
       const status = !todo.completed
-      await $fetch('/api/todos', {
+      await $fetch<Todo>('/api/todos', {
         method: 'POST', body: {
           id: todo.id, title: todo.title, completed: status
         }
       })
       todo.completed = status
+      console.log(`Todo ${id} toggled to ${status}`)
     }
   }
 

@@ -5,9 +5,16 @@ Each todo should have a checkbox bound to toggleTodo -->
   <UPage>
     <UPageList>
       <NuxtLink to="/todo/add">Add Todo</NuxtLink>
-      <UPageCard v-for="todo in todos" :key="todo.id">
+      <UPageCard
+        v-for="todo in todos"
+        :key="todo.id"
+      >
         <UPageColumns>
-          <UCheckbox :model-value="todo.completed" :label="todo.title" @update:model-value="toggleTodo(todo.id)"/>
+          <UCheckbox
+            :model-value="todo.completed"
+            :label="`${todo.id}: ${todo.title}`"
+            @update:model-value="toggleTodo(todo.id)"
+          />
         </UPageColumns>
       </UPageCard>
     </UPageList>

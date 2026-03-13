@@ -4,14 +4,14 @@
 
 <template>
   <UPage>
-    <form>
+    <form @submit.prevent="sendTodo">
       <UInput
         v-model="todoText"
         placeholder="Add Todo"
       />
       <UButton
         label="Submit"
-        @click="sendTodo"
+        type="submit"
       />
     </form>
   </UPage>

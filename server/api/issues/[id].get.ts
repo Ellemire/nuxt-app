@@ -1,14 +1,15 @@
 /* fetches a single post and its comments,
 returns them as { issue, comments } */
 
+import type { IssueComment, Issue } from '~/types/issue'
 import getStatusById from '~~/server/utils/get-status-by-id'
 
 export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id')
 
   const [rawIssue, comments] = await Promise.all([
-    $fetch(`https://jsonplaceholder.typicode.com/posts/${id}`),
-    $fetch(`https://jsonplaceholder.typicode.com/posts/${id}/comments`)
+    $fetch<Issue>(`https://jsonplaceholder.typicode.com/posts/${id}`),
+    $fetch<IssueComment[]>(`https://jsonplaceholder.typicode.com/posts/${id}/comments`)
   ])
 
   const issue = {

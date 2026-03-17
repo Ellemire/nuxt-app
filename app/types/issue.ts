@@ -30,3 +30,8 @@ export type IssueResponse = {
   issue: Issue
   comments: IssueComment[]
 }
+
+export type IssuesListResponse = {
+  items: Issue[]
+  total: number
+}
